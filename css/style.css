@@ -1,0 +1,855 @@
+/* ===========================================================
+   MISSÃO ENOPS — Scape Room
+   =========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root{
+  --navy: #0c2a52;
+  --navy-deep: #081b36;
+  --blue: #1f6fd1;
+  --blue-light: #5fa2ef;
+  --cream: #f6edd8;
+  --cream-soft: #fbf6ea;
+  --paper: #ffffff;
+  --orange: #f2792b;
+  --yellow: #ffc83d;
+  --green: #2bab5f;
+  --red: #e4572e;
+  --ink: #16233a;
+  --muted: #5c6b84;
+  --radius-lg: 26px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --shadow-soft: 0 14px 34px rgba(12, 42, 82, .14);
+  --shadow-pop: 0 20px 50px rgba(12, 42, 82, .25);
+  font-size: 16px;
+}
+
+*,*::before,*::after{ box-sizing: border-box; }
+
+html,body{
+  margin:0; padding:0; height:100%;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Nunito', sans-serif;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,h2,h3,h4{
+  font-family: 'Baloo 2', sans-serif;
+  color: var(--navy);
+  margin: 0 0 .4em;
+  line-height: 1.15;
+}
+
+p{ margin:0 0 .8em; line-height:1.55; }
+
+button{ font-family: inherit; cursor:pointer; }
+
+img{ max-width:100%; display:block; }
+
+a{ color: inherit; }
+
+::selection{ background: var(--yellow); color: var(--navy); }
+
+/* ---------- Layout shell ---------- */
+
+#app{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.screen{
+  display:none;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  animation: screenIn .5s ease both;
+}
+.screen.active{ display:flex; flex-direction:column; }
+
+@keyframes screenIn{
+  from{ opacity:0; transform: translateY(14px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+.bg-pattern{
+  position: fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(31,111,209,.08), transparent 40%),
+    radial-gradient(circle at 90% 20%, rgba(242,121,43,.10), transparent 35%),
+    radial-gradient(circle at 50% 100%, rgba(43,171,95,.08), transparent 45%),
+    var(--cream);
+}
+
+.container{
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+/* ---------- Top bar (inside rooms) ---------- */
+
+.topbar{
+  display:flex;
+  align-items:center;
+  gap: 14px;
+  padding: 16px 22px;
+  background: linear-gradient(180deg, rgba(12,42,82,.97), rgba(12,42,82,.9));
+  color:#fff;
+  position: sticky; top:0; z-index:20;
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+.topbar .room-tag{
+  background: var(--yellow);
+  color: var(--navy);
+  font-family:'Baloo 2';
+  font-weight:800;
+  font-size: .85rem;
+  letter-spacing:.04em;
+  padding: 7px 14px;
+  border-radius: 999px;
+  white-space:nowrap;
+}
+.topbar .room-title{
+  font-family:'Baloo 2';
+  font-weight:700;
+  font-size: 1.05rem;
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.topbar .icon-btn{
+  background: rgba(255,255,255,.14);
+  border: none;
+  color:#fff;
+  width:40px; height:40px;
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem;
+  transition: background .2s, transform .2s;
+  flex-shrink:0;
+}
+.topbar .icon-btn:hover{ background: rgba(255,255,255,.28); transform: scale(1.06); }
+
+.progress-dots{
+  display:flex; gap:7px; margin-left:4px;
+}
+.progress-dots span{
+  width:9px; height:9px; border-radius:50%;
+  background: rgba(255,255,255,.28);
+}
+.progress-dots span.done{ background: var(--green); }
+.progress-dots span.current{ background: var(--yellow); box-shadow:0 0 0 3px rgba(255,200,61,.3); }
+
+.room-body{
+  flex:1;
+  padding: 26px 0 60px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-family:'Baloo 2';
+  font-weight:700;
+  font-size: 1.05rem;
+  padding: 14px 30px;
+  border-radius: 999px;
+  border: none;
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(31,111,209,.35);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.btn:hover{ transform: translateY(-2px); filter: brightness(1.06); }
+.btn:active{ transform: translateY(0); }
+.btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; box-shadow:none; }
+
+.btn.primary{ background: var(--orange); box-shadow: 0 10px 22px rgba(242,121,43,.38); }
+.btn.success{ background: var(--green); box-shadow: 0 10px 22px rgba(43,171,95,.38); }
+.btn.ghost{
+  background: transparent;
+  color: var(--navy);
+  box-shadow:none;
+  border: 2px solid rgba(12,42,82,.25);
+}
+.btn.ghost:hover{ background: rgba(12,42,82,.06); }
+.btn.sm{ padding:9px 18px; font-size:.92rem; }
+
+/* ===========================================================
+   RECEPÇÃO
+   =========================================================== */
+
+.intro-screen{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding: 40px 20px;
+}
+
+.intro-card{
+  max-width: 760px;
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pop);
+  padding: 38px 34px 34px;
+  position:relative;
+  overflow:hidden;
+}
+
+.enops-logo{
+  font-family:'Baloo 2';
+  font-weight:800;
+  font-size:1.3rem;
+  color: var(--navy);
+  letter-spacing: .02em;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom: 14px;
+}
+.enops-logo .dot{
+  width:10px;height:10px;border-radius:50%;
+  background: var(--orange);
+  display:inline-block;
+}
+
+.intro-hero-img{
+  width:100%;
+  border-radius: var(--radius-md);
+  margin: 6px 0 22px;
+  box-shadow: var(--shadow-soft);
+}
+
+.eyebrow{
+  font-family:'Baloo 2';
+  font-weight:700;
+  color: var(--orange);
+  letter-spacing:.08em;
+  font-size:.92rem;
+  margin-bottom:8px;
+}
+
+.intro-card h1{ font-size: clamp(1.5rem, 4vw, 2.1rem); }
+
+.intro-text{
+  text-align:left;
+  color: var(--ink);
+  font-size: 1.05rem;
+  background: var(--cream-soft);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  margin: 18px 0 24px;
+  border-left: 5px solid var(--blue);
+}
+.intro-text strong{ color: var(--navy); }
+
+/* ---------- Hub (room map) ---------- */
+
+.hub-screen{ padding: 26px 0 60px; }
+
+.hub-header{
+  text-align:center;
+  padding: 18px 20px 6px;
+}
+.hub-header h1{ font-size: clamp(1.4rem, 3.6vw, 2rem); }
+.hub-header p{ color: var(--muted); max-width:560px; margin:0 auto; }
+
+.room-grid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 26px;
+}
+@media (max-width: 680px){
+  .room-grid{ grid-template-columns: 1fr; }
+}
+
+.room-card{
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 22px;
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  position:relative;
+  border: 3px solid transparent;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  cursor:pointer;
+  text-align:left;
+}
+.room-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-pop); }
+.room-card.locked{ cursor:not-allowed; filter: grayscale(.55); opacity:.72; }
+.room-card.locked:hover{ transform:none; box-shadow: var(--shadow-soft); }
+.room-card.done{ border-color: var(--green); }
+
+.room-card .room-num{
+  width:46px; height:46px;
+  border-radius:50%;
+  background: var(--navy);
+  color:#fff;
+  font-family:'Baloo 2'; font-weight:800; font-size:1.2rem;
+  display:flex; align-items:center; justify-content:center;
+}
+.room-card.done .room-num{ background: var(--green); }
+.room-card h3{ font-size:1.15rem; margin:4px 0 0; }
+.room-card p{ color: var(--muted); font-size:.92rem; margin:0; }
+.room-card .state-tag{
+  margin-top:auto;
+  font-family:'Baloo 2'; font-weight:700; font-size:.82rem;
+  display:inline-flex; align-items:center; gap:6px;
+  color: var(--blue);
+}
+.room-card.locked .state-tag{ color: var(--muted); }
+.room-card.done .state-tag{ color: var(--green); }
+
+.hub-footer{
+  text-align:center;
+  margin-top: 30px;
+}
+
+/* ===========================================================
+   SHARED ROOM COMPONENTS
+   =========================================================== */
+
+.room-intro-banner{
+  border-radius: var(--radius-lg);
+  overflow:hidden;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 22px;
+  position:relative;
+}
+.room-intro-banner img{ width:100%; display:block; height:auto; }
+
+.section-card{
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.section-title{
+  display:flex; align-items:center; gap:12px;
+  margin-bottom: 14px;
+}
+.section-title .badge{
+  background: var(--navy);
+  color:#fff;
+  font-family:'Baloo 2'; font-weight:700; font-size:.78rem;
+  padding: 6px 13px; border-radius:999px;
+}
+.section-title h2{ font-size:1.3rem; margin:0; }
+
+.helper-text{ color: var(--muted); font-size: .96rem; }
+
+/* ---------- Investigation hotspots (Sala 1) ---------- */
+
+.hotspot-grid{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 6px;
+}
+@media (max-width:760px){ .hotspot-grid{ grid-template-columns: repeat(2,1fr); } }
+
+.hotspot-card{
+  background: var(--cream-soft);
+  border: 2px solid rgba(12,42,82,.08);
+  border-radius: var(--radius-md);
+  padding: 16px 14px;
+  text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+  position:relative;
+}
+.hotspot-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-soft); }
+.hotspot-card .emoji{ font-size: 1.9rem; }
+.hotspot-card .label{ font-family:'Baloo 2'; font-weight:700; font-size:.95rem; color:var(--navy); }
+.hotspot-card.visited{ border-color: var(--green); }
+.hotspot-card.visited::after{
+  content:'✓';
+  position:absolute; top:8px; right:10px;
+  width:20px; height:20px; border-radius:50%;
+  background: var(--green); color:#fff;
+  font-size:.7rem; display:flex; align-items:center; justify-content:center;
+  font-weight:800;
+}
+
+/* ---------- Draggable cards / dropzones ---------- */
+
+.pool{
+  display:flex; flex-wrap:wrap; gap:12px;
+  padding: 16px;
+  background: var(--cream-soft);
+  border-radius: var(--radius-md);
+  min-height: 86px;
+}
+
+.card-chip{
+  font-family:'Baloo 2'; font-weight:600; font-size:.95rem;
+  background:#fff;
+  color: var(--navy);
+  border:2px solid rgba(12,42,82,.12);
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: 0 6px 14px rgba(12,42,82,.08);
+  touch-action: none;
+  user-select:none;
+  cursor: grab;
+  transition: box-shadow .15s, border-color .15s;
+}
+.card-chip:active{ cursor:grabbing; }
+.card-chip.dragging{
+  position: fixed;
+  z-index: 500;
+  box-shadow: 0 18px 30px rgba(12,42,82,.3);
+  transform: scale(1.06) rotate(-1deg);
+  pointer-events: none;
+}
+.card-chip.wrong-flag{ border-color: var(--red); animation: shake .4s; }
+.card-chip.correct-flag{ border-color: var(--green); }
+
+.dropzone{
+  border: 3px dashed rgba(31,111,209,.4);
+  border-radius: var(--radius-md);
+  min-height: 110px;
+  padding: 14px;
+  display:flex; flex-wrap:wrap; gap:12px; align-content:flex-start;
+  background: rgba(31,111,209,.05);
+  transition: background .2s, border-color .2s;
+  margin-top: 14px;
+}
+.dropzone.drag-over{ background: rgba(31,111,209,.14); border-color: var(--blue); }
+.dropzone-label{
+  font-family:'Baloo 2'; font-weight:700; color:var(--blue);
+  font-size:.88rem; letter-spacing:.03em; margin-top:10px;
+}
+
+/* ---------- Map puzzle (Sala 2 Desafio 1) ---------- */
+
+.map-puzzle{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+@media (max-width:620px){ .map-puzzle{ grid-template-columns: 1fr; } }
+
+.map-slot{
+  border: 3px dashed rgba(12,42,82,.25);
+  border-radius: var(--radius-md);
+  min-height: 92px;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:4px;
+  background: var(--cream-soft);
+  transition: background .2s, border-color .2s;
+  padding:10px;
+  text-align:center;
+}
+.map-slot .slot-hint{ font-size:.78rem; color:var(--muted); font-family:'Baloo 2'; }
+.map-slot.filled{ border-style:solid; border-color: var(--green); background:#fff; }
+.map-slot.drag-over{ border-color: var(--blue); background: rgba(31,111,209,.12); }
+
+.tile-pool{
+  display:flex; flex-wrap:wrap; gap:12px;
+  margin-bottom: 16px;
+}
+.map-tile{
+  font-family:'Baloo 2'; font-weight:700;
+  background:#fff; border:2px solid rgba(12,42,82,.12);
+  border-radius:14px; padding:14px 18px;
+  box-shadow:0 6px 14px rgba(12,42,82,.08);
+  display:flex; align-items:center; gap:8px;
+  touch-action:none; user-select:none; cursor:grab;
+  color: var(--navy);
+}
+.map-tile.dragging{ position:fixed; z-index:500; transform:scale(1.07); pointer-events:none; box-shadow:0 18px 30px rgba(12,42,82,.3); }
+
+/* ---------- Pipe path chooser (Sala 2 Desafio 2) ---------- */
+
+.pipe-chain{
+  display:flex; align-items:center; justify-content:center;
+  gap: 10px; flex-wrap:wrap;
+  margin: 18px 0 8px;
+}
+.pipe-node{
+  font-family:'Baloo 2'; font-weight:700;
+  background: var(--navy); color:#fff;
+  padding: 12px 18px; border-radius: 14px;
+  font-size:.95rem;
+  opacity:.35; transform: scale(.92);
+  transition: opacity .3s, transform .3s, background .3s;
+}
+.pipe-node.active{ opacity:1; transform:scale(1); background: var(--blue); }
+.pipe-node.locked-in{ opacity:1; transform:scale(1); background: var(--green); }
+.pipe-arrow{ font-size:1.3rem; color: var(--muted); opacity:.5; transition:opacity .3s,color .3s; }
+.pipe-arrow.active{ opacity:1; color: var(--blue); }
+
+.choice-row{
+  display:grid; gap:12px; margin-top:18px;
+  grid-template-columns: repeat(auto-fit, minmax(190px,1fr));
+}
+.choice-btn{
+  background:#fff;
+  border: 2px solid rgba(12,42,82,.14);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align:left;
+  font-family:'Nunito'; font-weight:700;
+  color: var(--navy);
+  box-shadow: 0 6px 14px rgba(12,42,82,.06);
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+.choice-btn:hover{ transform: translateY(-3px); box-shadow: var(--shadow-soft); border-color: var(--blue); }
+.choice-btn .ch-letter{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:26px;height:26px; border-radius:50%;
+  background: var(--navy); color:#fff; font-family:'Baloo 2';
+  font-size:.82rem; margin-right:8px;
+}
+.choice-btn.correct-pick{ border-color: var(--green); background: rgba(43,171,95,.08); }
+.choice-btn.wrong-pick{ border-color: var(--red); background: rgba(228,87,46,.08); animation: shake .4s; }
+
+/* ---------- Hazard spotting (Sala 3 parte 1) ---------- */
+
+.hazard-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 10px;
+}
+@media (max-width:760px){ .hazard-grid{ grid-template-columns: repeat(2,1fr); } }
+
+.hazard-tile{
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow:hidden;
+  box-shadow: var(--shadow-soft);
+  cursor:pointer;
+  border: 4px solid transparent;
+  transition: transform .18s, border-color .18s;
+}
+.hazard-tile:hover{ transform: translateY(-3px); }
+.hazard-tile img{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
+.hazard-tile.found{ border-color: var(--green); }
+.hazard-tile .found-badge{
+  position:absolute; top:8px; right:8px;
+  width:30px; height:30px; border-radius:50%;
+  background: var(--green); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; opacity:0; transform: scale(.3);
+  transition: opacity .25s, transform .25s;
+}
+.hazard-tile.found .found-badge{ opacity:1; transform:scale(1); }
+.hazard-tile .hz-label{
+  position:absolute; left:0; right:0; bottom:0;
+  background: linear-gradient(0deg, rgba(0,0,0,.72), transparent);
+  color:#fff; font-family:'Baloo 2'; font-weight:700;
+  font-size:.78rem; padding: 18px 8px 8px; text-align:center;
+}
+
+.counter-pill{
+  display:inline-flex; align-items:center; gap:8px;
+  background: var(--navy); color:#fff;
+  font-family:'Baloo 2'; font-weight:700;
+  padding: 8px 16px; border-radius:999px;
+  font-size:.92rem;
+}
+.counter-pill b{ color: var(--yellow); font-size:1.05rem; }
+
+/* ---------- Testimony cards (Sala 3 parte 2) ---------- */
+
+.testimony-pool{
+  display:grid; grid-template-columns: repeat(4,1fr);
+  gap: 14px; margin-bottom: 10px;
+}
+@media (max-width:760px){ .testimony-pool{ grid-template-columns: repeat(2,1fr); } }
+
+.testimony-card{
+  background:#fff; border-radius: var(--radius-md);
+  overflow:hidden; box-shadow: var(--shadow-soft);
+  border: 2px solid rgba(12,42,82,.1);
+  touch-action:none; user-select:none; cursor:grab;
+}
+.testimony-card img{ width:100%; aspect-ratio:4/3; object-fit:cover; }
+.testimony-card .tc-name{
+  font-family:'Baloo 2'; font-weight:700; font-size:.82rem;
+  padding: 8px 10px; color: var(--navy); text-align:center;
+}
+.testimony-card.dragging{ position:fixed; z-index:500; transform:scale(1.05); pointer-events:none; box-shadow:0 18px 32px rgba(12,42,82,.32); width:160px; }
+
+.investigation-panel{
+  border: 3px dashed rgba(31,111,209,.4);
+  border-radius: var(--radius-md);
+  min-height: 130px;
+  background: rgba(31,111,209,.05);
+  display:flex; flex-wrap:wrap; gap:10px; padding:14px; align-content:flex-start;
+  transition: background .2s, border-color .2s;
+}
+.investigation-panel.drag-over{ background: rgba(31,111,209,.15); border-color:var(--blue); }
+.investigation-panel .testimony-card.placed{
+  width: 128px;
+  box-shadow: 0 6px 14px rgba(12,42,82,.12);
+}
+
+.order-row{
+  display:flex; flex-wrap:wrap; gap:12px; margin-top:14px;
+}
+.order-btn{
+  background:#fff; border:2px solid rgba(12,42,82,.14);
+  border-radius: 14px; padding: 14px 18px;
+  font-family:'Baloo 2'; font-weight:700; color:var(--navy);
+  box-shadow: 0 6px 14px rgba(12,42,82,.08);
+  transition: transform .18s, border-color .18s, opacity .18s;
+}
+.order-btn:hover{ transform: translateY(-2px); }
+.order-btn.picked{ opacity:.35; pointer-events:none; }
+.order-btn.shake{ animation: shake .4s; }
+
+.order-slots{
+  display:flex; gap:12px; margin: 16px 0; flex-wrap:wrap;
+}
+.order-slot{
+  flex:1; min-width:120px;
+  border: 2px dashed rgba(12,42,82,.25);
+  border-radius: 14px;
+  padding: 12px; text-align:center;
+  font-family:'Baloo 2'; font-weight:700; color: var(--muted);
+  min-height: 52px; display:flex; align-items:center; justify-content:center;
+}
+.order-slot.filled{ border-style:solid; border-color: var(--green); color: var(--navy); background:#fff; }
+
+/* ---------- Dialogue choices (Sala 4) ---------- */
+
+.scenario-card{
+  display:flex; flex-direction:column; gap:14px;
+}
+.scenario-tag{
+  display:inline-flex; align-self:flex-start;
+  background: var(--yellow); color: var(--navy);
+  font-family:'Baloo 2'; font-weight:800; font-size:.78rem;
+  padding: 6px 14px; border-radius:999px;
+}
+.scenario-choices{
+  display:grid; gap:12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+}
+
+.scenario-dots{
+  display:flex; gap:8px; justify-content:center; margin-top: 18px;
+}
+.scenario-dots span{
+  width:10px; height:10px; border-radius:50%;
+  background: rgba(12,42,82,.18);
+}
+.scenario-dots span.on{ background: var(--blue); }
+.scenario-dots span.ok{ background: var(--green); }
+
+/* ---------- Final sort (Sala 4 desafio final) ---------- */
+
+.final-sort{
+  display:grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 22px;
+  align-items:start;
+}
+@media (max-width:760px){ .final-sort{ grid-template-columns: 1fr; } }
+
+.sort-pool{
+  display:grid; grid-template-columns: repeat(2,1fr); gap:12px;
+}
+.sort-card{
+  background:#fff; border-radius: var(--radius-md);
+  overflow:hidden; box-shadow: var(--shadow-soft);
+  border: 2px solid rgba(12,42,82,.1);
+  touch-action:none; user-select:none; cursor:grab;
+}
+.sort-card img{ width:100%; aspect-ratio:3/4; object-fit:cover; }
+.sort-card .sc-name{ font-family:'Baloo 2'; font-weight:700; text-align:center; padding:8px; font-size:.82rem; color:var(--navy); }
+.sort-card.dragging{ position:fixed; z-index:500; transform:scale(1.05); pointer-events:none; box-shadow:0 18px 32px rgba(12,42,82,.3); width: 160px; }
+.sort-card.placed{ opacity:.3; }
+
+.sort-chain{
+  display:flex; flex-direction:column; gap:10px;
+}
+.sort-slot{
+  border: 3px dashed rgba(12,42,82,.25);
+  border-radius: var(--radius-md);
+  min-height: 64px;
+  display:flex; align-items:center; gap:12px; padding: 10px 16px;
+  background: var(--cream-soft);
+  transition: border-color .2s, background .2s;
+}
+.sort-slot .num{
+  width:30px; height:30px; border-radius:50%;
+  background: var(--navy); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Baloo 2'; font-weight:800; flex-shrink:0;
+}
+.sort-slot.filled{ border-style:solid; border-color: var(--green); background:#fff; }
+.sort-slot.drag-over{ border-color: var(--blue); background: rgba(31,111,209,.12); }
+.sort-connector{ width:3px; height:12px; background: rgba(12,42,82,.18); margin-left:15px; }
+
+.sort-slot .sort-card{
+  width: 72px; flex-shrink:0;
+  display:flex; flex-direction:row; align-items:center; gap:8px;
+  box-shadow:none; border:none; background:transparent;
+}
+.sort-slot .sort-card img{ width:46px; aspect-ratio:1/1; border-radius:8px; }
+.sort-slot .sort-card .sc-name{ display:block; text-align:left; padding:0; font-size:.8rem; }
+
+/* ---------- Ending transition ---------- */
+
+.ending-screen{
+  align-items:center; justify-content:center; text-align:center; padding: 30px 18px;
+}
+.ending-stage{
+  position:relative; width:100%; max-width: 640px;
+  border-radius: var(--radius-lg); overflow:hidden; box-shadow: var(--shadow-pop);
+  aspect-ratio: 8/5;
+}
+.ending-stage img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; transition: opacity 1.1s ease;
+}
+.ending-stage img.show{ opacity:1; }
+.ending-caption{
+  font-family:'Baloo 2'; font-weight:700; color:var(--navy); margin-top:18px; font-size:1.1rem;
+  min-height: 1.6em;
+}
+
+/* ---------- Mission complete ---------- */
+
+.complete-screen{ align-items:center; padding: 40px 18px 70px; }
+.complete-card{
+  max-width: 760px; margin:0 auto;
+  background:#fff; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pop); padding: 36px 32px; text-align:center;
+  position:relative; overflow:hidden;
+}
+.complete-check{
+  width:76px; height:76px; border-radius:50%;
+  background: var(--green); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:2.1rem; margin: 0 auto 16px;
+  animation: pop .5s ease;
+}
+.recap-list{
+  list-style:none; padding:0; margin: 18px 0; text-align:left;
+  display:grid; gap:9px;
+  max-width:420px; margin-left:auto; margin-right:auto;
+}
+.recap-list li{
+  display:flex; align-items:center; gap:10px;
+  font-weight:700; color: var(--navy);
+  background: var(--cream-soft); padding:10px 14px; border-radius:12px;
+  opacity:0; transform: translateX(-10px);
+  animation: recapIn .5s ease forwards;
+}
+@keyframes recapIn{ to{ opacity:1; transform:translateX(0); } }
+.recap-list li .ico{ font-size:1.1rem; }
+
+.closing-quote{
+  background: linear-gradient(135deg, var(--navy), var(--navy-deep));
+  color:#fff; border-radius: var(--radius-md);
+  padding: 22px 24px; margin: 24px 0; text-align:left;
+}
+.closing-quote p{ margin:0 0 8px; }
+.closing-quote .lead{ opacity:.85; }
+.closing-quote .strong{ font-family:'Baloo 2'; font-weight:700; font-size:1.15rem; color: var(--yellow); }
+
+.final-banner{
+  font-family:'Baloo 2'; font-weight:800; color: var(--orange);
+  font-size: clamp(1.3rem, 4vw, 1.8rem); margin-top: 6px;
+}
+
+/* ===========================================================
+   MODAL / OVERLAY FEEDBACK
+   =========================================================== */
+
+#modal-root{
+  position: fixed; inset:0; z-index:1000;
+  display:none; align-items:center; justify-content:center;
+  padding: 20px;
+  background: rgba(8,20,40,.55);
+  backdrop-filter: blur(2px);
+}
+#modal-root.open{ display:flex; }
+
+.modal-box{
+  background:#fff; border-radius: var(--radius-lg);
+  max-width: 460px; width:100%;
+  padding: 30px 26px 26px;
+  text-align:center;
+  box-shadow: var(--shadow-pop);
+  animation: pop .35s ease;
+  position:relative;
+}
+.modal-icon{
+  width:64px; height:64px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  margin: 0 auto 14px; font-size:1.8rem; color:#fff;
+}
+.modal-icon.ok{ background: var(--green); }
+.modal-icon.warn{ background: var(--orange); }
+.modal-icon.info{ background: var(--blue); }
+.modal-icon.hint{ background: var(--muted); }
+.modal-box h3{ font-size:1.25rem; margin-bottom:8px; }
+.modal-box p{ color: var(--muted); margin-bottom: 18px; }
+
+@keyframes pop{
+  0%{ opacity:0; transform: scale(.82); }
+  70%{ transform: scale(1.03); }
+  100%{ opacity:1; transform: scale(1); }
+}
+
+@keyframes shake{
+  0%,100%{ transform: translateX(0); }
+  20%{ transform: translateX(-8px); }
+  40%{ transform: translateX(7px); }
+  60%{ transform: translateX(-5px); }
+  80%{ transform: translateX(4px); }
+}
+.shake{ animation: shake .4s; }
+
+/* confetti */
+.confetti-piece{
+  position: fixed; top:-20px; z-index:1100;
+  width:9px; height:14px; opacity:.95;
+  animation-name: confettiFall;
+  animation-timing-function: cubic-bezier(.3,.6,.4,1);
+  animation-fill-mode: forwards;
+  pointer-events:none;
+}
+@keyframes confettiFall{
+  to{ transform: translateY(105vh) rotate(540deg); opacity:.3; }
+}
+
+/* ---------- Misc ---------- */
+
+.center-actions{ display:flex; justify-content:center; gap:12px; margin-top:22px; flex-wrap:wrap; }
+.row-actions{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top: 22px; flex-wrap:wrap; }
+
+.lock-icon{ font-size:1.3rem; }
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);
+}
+
+@media (max-width: 480px){
+  .intro-card{ padding: 26px 18px; }
+  .section-card{ padding:18px; }
+}

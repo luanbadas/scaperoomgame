@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Missão ENOPS — Água, Dignidade e Futuro</title>
+<meta name="description" content="Scape room educativo da ENOPS Engenharia: ajude a Família Oliveira resolvendo os desafios de saneamento da comunidade.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💧</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="bg-pattern"></div>
+<div id="app">
+
+  <!-- =================== RECEPÇÃO — TELA 1 =================== -->
+  <section class="screen intro-screen active" data-screen="intro-1">
+    <div class="container">
+      <div class="intro-card">
+        <span class="enops-logo"><span class="dot"></span>ENOPS engenharia</span>
+        <img class="intro-hero-img" src="assets/img/familia-triste.webp" alt="Família Oliveira na comunidade, preocupada com os problemas de saneamento">
+        <div class="eyebrow">MISSÃO ENOPS</div>
+        <h1>Água, Dignidade e Futuro</h1>
+        <div class="intro-text">
+          <p>A <strong>Família Oliveira</strong> vive nesta comunidade há muitos anos.</p>
+          <p>Nos últimos meses, alguns problemas começaram a fazer parte da rotina: mau cheiro, esgoto próximo às casas, água acumulada e preocupação com a saúde dos moradores.</p>
+          <p>Uma equipe da <strong>ENOPS</strong> foi chamada para acompanhar a situação.</p>
+          <p>Hoje, essa equipe será vocês.</p>
+          <p>A missão será passar por quatro etapas e ajudar a transformar a realidade desta comunidade.</p>
+          <p><strong>Preparados?</strong></p>
+        </div>
+        <button class="btn primary" id="btn-start-mission">Iniciar missão →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== HUB — MAPA DE SALAS =================== -->
+  <section class="screen hub-screen" data-screen="hub">
+    <div class="topbar">
+      <span class="room-tag">ENOPS</span>
+      <span class="room-title">Mapa da missão</span>
+      <div class="progress-dots" id="hub-progress-dots"></div>
+    </div>
+    <div class="container">
+      <div class="hub-header">
+        <h1>Escolham a próxima etapa</h1>
+        <p>Completem as quatro salas, na ordem, para transformar a realidade da comunidade.</p>
+      </div>
+      <div class="room-grid" id="room-grid">
+        <button class="room-card" data-room="1">
+          <span class="room-num">1</span>
+          <h3>Diagnóstico</h3>
+          <p>O que está acontecendo na comunidade?</p>
+          <span class="state-tag">Jogar →</span>
+        </button>
+        <button class="room-card" data-room="2">
+          <span class="room-num">2</span>
+          <h3>Planejamento</h3>
+          <p>Para onde vai o esgoto?</p>
+          <span class="state-tag">Jogar →</span>
+        </button>
+        <button class="room-card" data-room="3">
+          <span class="room-num">3</span>
+          <h3>Obra</h3>
+          <p>A obra começou — e um imprevisto apareceu.</p>
+          <span class="state-tag">Jogar →</span>
+        </button>
+        <button class="room-card" data-room="4">
+          <span class="room-num">4</span>
+          <h3>Transformação</h3>
+          <p>Para quem estamos construindo?</p>
+          <span class="state-tag">Jogar →</span>
+        </button>
+      </div>
+      <div class="hub-footer">
+        <button class="btn ghost sm" id="btn-reset-progress">↺ Reiniciar missão</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SALA 1 — DIAGNÓSTICO =================== -->
+  <section class="screen" data-screen="room1">
+    <div class="topbar">
+      <button class="icon-btn" data-go="hub" aria-label="Voltar ao mapa">←</button>
+      <span class="room-tag">SALA 1</span>
+      <span class="room-title">O que está acontecendo?</span>
+    </div>
+    <div class="room-body">
+      <div class="container">
+
+        <div class="room-intro-banner">
+          <img src="assets/img/investigacao-comunidade.webp" alt="Equipe ENOPS investigando a comunidade">
+        </div>
+
+        <div class="section-card" id="s1-investigate-card">
+          <div class="section-title"><span class="badge">INVESTIGAÇÃO</span><h2>Cliquem nos ícones para investigar</h2></div>
+          <p class="helper-text">Converse com os moradores e observe a comunidade antes de tirar conclusões.</p>
+          <div class="hotspot-grid" id="s1-hotspots">
+            <button class="hotspot-card" data-spot="casa1">
+              <span class="emoji">🏚️</span>
+              <span class="label">Casa 1</span>
+            </button>
+            <button class="hotspot-card" data-spot="familia">
+              <span class="emoji">👨‍👩‍👧‍👦</span>
+              <span class="label">Família Oliveira</span>
+            </button>
+            <button class="hotspot-card" data-spot="posto">
+              <span class="emoji">🏥</span>
+              <span class="label">Posto de saúde</span>
+            </button>
+            <button class="hotspot-card" data-spot="area">
+              <span class="emoji">🌊</span>
+              <span class="label">Área externa</span>
+            </button>
+          </div>
+          <div class="row-actions">
+            <span class="helper-text" id="s1-visit-counter">0 de 4 observações feitas</span>
+            <button class="btn" id="s1-to-challenge" disabled>Ir para o desafio →</button>
+          </div>
+        </div>
+
+        <div class="section-card" id="s1-challenge-card" style="display:none;">
+          <div class="section-title"><span class="badge">DESAFIO</span><h2>Identifiquem o problema</h2></div>
+          <p class="helper-text">Vocês já têm as informações. Arrastem para a zona de diagnóstico apenas os elementos relacionados ao <strong>problema</strong> da comunidade.</p>
+          <div class="pool" id="s1-pool"></div>
+          <div class="dropzone-label">Zona de diagnóstico</div>
+          <div class="dropzone" id="s1-zone" data-zone="s1"></div>
+          <div class="center-actions">
+            <button class="btn primary" id="s1-check">Verificar diagnóstico</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SALA 2 — PLANEJAMENTO =================== -->
+  <section class="screen" data-screen="room2">
+    <div class="topbar">
+      <button class="icon-btn" data-go="hub" aria-label="Voltar ao mapa">←</button>
+      <span class="room-tag">SALA 2</span>
+      <span class="room-title">Para onde vai o esgoto?</span>
+    </div>
+    <div class="room-body">
+      <div class="container">
+
+        <div class="section-card" id="s2-map-card">
+          <div class="section-title"><span class="badge">DESAFIO 1</span><h2>Montem o mapa</h2></div>
+          <p class="helper-text">Arrastem cada peça para o encaixe correto no mapa da comunidade.</p>
+          <div class="tile-pool" id="s2-tile-pool"></div>
+          <div class="map-puzzle" id="s2-map-puzzle"></div>
+          <div class="center-actions">
+            <button class="btn primary" id="s2-map-check" disabled>Verificar mapa</button>
+          </div>
+        </div>
+
+        <div class="section-card" id="s2-pipe-card" style="display:none;">
+          <div class="section-title"><span class="badge">DESAFIO 2</span><h2>Conectem o caminho</h2></div>
+          <p class="helper-text">Escolham, em cada etapa, o caminho correto até o sistema principal.</p>
+
+          <div class="pipe-chain" id="s2-pipe-chain">
+            <span class="pipe-node active" data-node="casas">Casas</span>
+            <span class="pipe-arrow" id="s2-arrow-1">→</span>
+            <span class="pipe-node" data-node="coleta">Rede de coleta</span>
+            <span class="pipe-arrow" id="s2-arrow-2">→</span>
+            <span class="pipe-node" data-node="sistema">Sistema principal</span>
+          </div>
+
+          <div id="s2-stage1">
+            <p class="helper-text"><strong>Etapa 1 —</strong> Para onde a tubulação das casas deve seguir?</p>
+            <div class="choice-row">
+              <button class="choice-btn" data-correct="true" data-stage="1"><span class="ch-letter">A</span>Casa → Rede de coleta</button>
+              <button class="choice-btn" data-correct="false" data-stage="1"><span class="ch-letter">B</span>Casa → córrego</button>
+              <button class="choice-btn" data-correct="false" data-stage="1"><span class="ch-letter">C</span>Casa → tubulação bloqueada</button>
+            </div>
+          </div>
+
+          <div id="s2-stage2" style="display:none;">
+            <p class="helper-text"><strong>Etapa 2 —</strong> E da rede de coleta, para onde deve seguir?</p>
+            <div class="choice-row">
+              <button class="choice-btn" data-correct="true" data-stage="2"><span class="ch-letter">A</span>Rede de coleta → Sistema principal</button>
+              <button class="choice-btn" data-correct="false" data-stage="2"><span class="ch-letter">B</span>Rede de coleta → Depósito irregular</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SALA 3 — OBRA =================== -->
+  <section class="screen" data-screen="room3">
+    <div class="topbar">
+      <button class="icon-btn" data-go="hub" aria-label="Voltar ao mapa">←</button>
+      <span class="room-tag">SALA 3</span>
+      <span class="room-title">A obra começou</span>
+    </div>
+    <div class="room-body">
+      <div class="container">
+
+        <div class="section-card" id="s3-safety-card">
+          <div class="section-title"><span class="badge">SEGURANÇA PRIMEIRO</span><h2>Encontrem os riscos no canteiro</h2></div>
+          <p class="helper-text">Cliquem em todas as situações de risco antes de liberar a obra.</p>
+          <div class="hazard-grid" id="s3-hazard-grid"></div>
+          <div class="row-actions">
+            <span class="counter-pill">Riscos encontrados: <b id="s3-hazard-count">0</b>/6</span>
+            <button class="btn primary" id="s3-start-obra" disabled>Iniciar obra →</button>
+          </div>
+        </div>
+
+        <div class="section-card" id="s3-incident-card" style="display:none;">
+          <div class="section-title"><span class="badge">🚨 OBRA INTERROMPIDA</span><h2>Algo diferente do projeto foi encontrado</h2></div>
+          <p class="helper-text">Arrastem os quatro depoimentos para o Painel de Investigação.</p>
+
+          <div class="testimony-pool" id="s3-testimony-pool"></div>
+          <div class="dropzone-label">Painel de investigação</div>
+          <div class="investigation-panel" id="s3-panel" data-zone="s3"></div>
+
+          <div id="s3-mc" style="display:none; margin-top:22px;">
+            <p class="helper-text"><strong>Qual conclusão faz mais sentido?</strong></p>
+            <div class="choice-row">
+              <button class="choice-btn" data-correct="false"><span class="ch-letter">A</span>Continuar normalmente.</button>
+              <button class="choice-btn" data-correct="true"><span class="ch-letter">B</span>Existe uma estrutura antiga que precisa ser investigada antes de a obra continuar.</button>
+              <button class="choice-btn" data-correct="false"><span class="ch-letter">C</span>Cancelar toda a obra.</button>
+            </div>
+          </div>
+
+          <div id="s3-order" style="display:none; margin-top:22px;">
+            <p class="helper-text"><strong>Organizem o próximo passo</strong> — toquem na ordem correta.</p>
+            <div class="order-slots" id="s3-order-slots">
+              <div class="order-slot" data-slot="0">1º</div>
+              <div class="order-slot" data-slot="1">2º</div>
+              <div class="order-slot" data-slot="2">3º</div>
+            </div>
+            <div class="order-row" id="s3-order-row"></div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SALA 4 — TRANSFORMAÇÃO =================== -->
+  <section class="screen" data-screen="room4">
+    <div class="topbar">
+      <button class="icon-btn" data-go="hub" aria-label="Voltar ao mapa">←</button>
+      <span class="room-tag">SALA 4</span>
+      <span class="room-title">Para quem estamos construindo?</span>
+    </div>
+    <div class="room-body">
+      <div class="container">
+
+        <div class="section-card" id="s4-scenario-card">
+          <div class="section-title"><span class="badge" id="s4-badge">DESAFIO 1</span><h2 id="s4-scenario-title">A moradora precisa sair</h2></div>
+          <div class="scenario-card">
+            <p class="helper-text" id="s4-scenario-text">Uma parte da rua está interditada. Uma mãe precisa sair para levar o filho ao médico.</p>
+            <div class="scenario-choices" id="s4-scenario-choices"></div>
+          </div>
+          <div class="scenario-dots" id="s4-dots">
+            <span class="dot1"></span><span class="dot2"></span><span class="dot3"></span>
+          </div>
+        </div>
+
+        <div class="section-card" id="s4-final-card" style="display:none;">
+          <div class="section-title"><span class="badge">DESAFIO FINAL</span><h2>Façam o sistema funcionar</h2></div>
+          <p class="helper-text">A obra está quase pronta. Arrastem as etapas na ordem certa para fazer o sistema funcionar.</p>
+          <div class="final-sort">
+            <div class="sort-pool" id="s4-sort-pool"></div>
+            <div class="sort-chain" id="s4-sort-chain"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== ENCERRAMENTO (transição) =================== -->
+  <section class="screen ending-screen" data-screen="ending">
+    <div class="container">
+      <div class="ending-stage">
+        <img id="ending-img-before" src="assets/img/missao-antes.webp" alt="A comunidade antes da intervenção, com esgoto exposto">
+        <img id="ending-img-after" src="assets/img/missao-depois.webp" alt="A comunidade depois da intervenção, com rua transformada">
+      </div>
+      <p class="ending-caption" id="ending-caption">A comunidade antes da intervenção...</p>
+    </div>
+  </section>
+
+  <!-- =================== MISSÃO CONCLUÍDA =================== -->
+  <section class="screen complete-screen" data-screen="complete">
+    <div class="container">
+      <div class="complete-card">
+        <div class="complete-check">✓</div>
+        <h1>Missão concluída</h1>
+        <p class="helper-text">No início desta missão, vocês encontraram uma família convivendo diariamente com problemas de saneamento.</p>
+        <ul class="recap-list">
+          <li style="animation-delay:.05s"><span class="ico">🔍</span> Identificaram o problema</li>
+          <li style="animation-delay:.15s"><span class="ico">📋</span> Planejaram</li>
+          <li style="animation-delay:.25s"><span class="ico">🦺</span> Garantiram a segurança</li>
+          <li style="animation-delay:.35s"><span class="ico">⚙️</span> Resolveram um imprevisto</li>
+          <li style="animation-delay:.45s"><span class="ico">🤝</span> Conversaram com a comunidade</li>
+          <li style="animation-delay:.55s"><span class="ico">✅</span> E fizeram o sistema funcionar</li>
+        </ul>
+        <div class="closing-quote">
+          <p class="lead">Para vocês, foi uma missão.</p>
+          <p class="strong">Para uma família, significa saúde, segurança, dignidade e qualidade de vida.</p>
+          <p class="lead">É esse impacto que o trabalho da ENOPS busca gerar todos os dias.</p>
+        </div>
+        <div class="final-banner">PARABÉNS, ENGENHEIROS! 🎉</div>
+        <div class="center-actions">
+          <button class="btn primary" id="btn-play-again">↺ Jogar novamente</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Feedback modal root -->
+<div id="modal-root">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-icon" id="modal-icon">✓</div>
+    <h3 id="modal-title">Título</h3>
+    <p id="modal-text">Texto</p>
+    <button class="btn" id="modal-cta">Continuar</button>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
