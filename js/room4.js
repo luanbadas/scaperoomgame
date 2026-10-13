@@ -132,6 +132,7 @@ function buildFinalSort() {
     const slot = document.createElement('div');
     slot.className = 'sort-slot';
     slot.dataset.index = i;
+    slot.dataset.accept = item.id;
     slot.innerHTML = `<span class="num">${i + 1}</span>`;
     chain.appendChild(slot);
     if (i < SORT_ITEMS.length - 1) {
@@ -153,20 +154,25 @@ function buildFinalSort() {
     makeDraggable(card, {
       getZones: () => slots.concat([pool]),
       onDrop: (el, zone) => {
-        // free up any slot this card previously occupied
-        Object.keys(sortFilled).forEach(k => { if (sortFilled[k] === item.id) delete sortFilled[k]; });
-
         if (zone === pool) {
+          delete sortFilled[Object.keys(sortFilled).find(k => sortFilled[k] === item.id)];
           pool.appendChild(el);
           refreshSlotClasses(slots);
           return true;
+        }
+
+        if (zone.dataset.accept !== item.id) {
+          // wrong position: card snaps back to where it was dragged from
+          shakeEl(zone);
+          shakeEl(el);
+          return false;
         }
 
         // bounce any card currently occupying this slot back to the pool
         const existing = zone.querySelector('.sort-card');
         if (existing && existing !== el) {
           pool.appendChild(existing);
-          Object.keys(sortFilled).forEach(k => { if (sortFilled[k] === existing.dataset.id) delete sortFilled[k]; });
+          delete sortFilled[zone.dataset.index];
         }
 
         zone.appendChild(el);
@@ -187,28 +193,15 @@ function refreshSlotClasses(slots) {
 
 function checkFinalSort() {
   if (Object.keys(sortFilled).length < SORT_ITEMS.length) return;
-  const correctOrder = SORT_ITEMS.map(i => i.id);
-  const currentOrder = SORT_ITEMS.map((_, i) => sortFilled[i]);
-  const allCorrect = correctOrder.every((id, i) => id === currentOrder[i]);
 
-  if (allCorrect) {
-    launchConfetti(90);
-    setTimeout(() => {
-      showModal({
-        icon: '🎉', iconClass: 'ok',
-        title: 'Sistema funcionando!',
-        text: 'Das residências até o tratamento — o saneamento agora funciona de ponta a ponta.',
-        ctaText: 'Ver o resultado',
-        onCta: () => { onComplete && onComplete(); goToEnding && goToEnding(); },
-      });
-    }, 400);
-  } else {
-    setTimeout(() => {
-      qsa('.sort-slot', qs('#s4-sort-chain')).forEach(slot => {
-        const id = slot.dataset.filledId;
-        const idx = Number(slot.dataset.index);
-        if (id && id !== correctOrder[idx]) shakeEl(slot);
-      });
-    }, 150);
-  }
+  launchConfetti(90);
+  setTimeout(() => {
+    showModal({
+      icon: '🎉', iconClass: 'ok',
+      title: 'Sistema funcionando!',
+      text: 'Das residências até o tratamento — o saneamento agora funciona de ponta a ponta.',
+      ctaText: 'Ver o resultado',
+      onCta: () => { onComplete && onComplete(); goToEnding && goToEnding(); },
+    });
+  }, 400);
 }

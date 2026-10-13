@@ -1,7 +1,7 @@
 // ===========================================================
 // SALA 2 — Planejamento
 // ===========================================================
-import { qs, qsa, shuffle, shakeEl, showModal, makeDraggable } from './utils.js';
+import { qs, qsa, shuffle, shakeEl, showModal, launchConfetti, makeDraggable } from './utils.js';
 
 const MAP_PIECES = [
   { id: 'casas', emoji: '🏘️', label: 'Casas' },
@@ -10,8 +10,21 @@ const MAP_PIECES = [
   { id: 'destino', emoji: '🎯', label: 'Ponto de destino' },
 ];
 
+const PIPE_PIECES = [
+  { id: 'tubo-pvc', emoji: '🧵', label: 'Tubo de PVC novo', correct: true },
+  { id: 'conexao-vedada', emoji: '🔩', label: 'Conexão vedada', correct: true },
+  { id: 'registro', emoji: '🚰', label: 'Registro de passagem', correct: true },
+  { id: 'caixa-inspecao', emoji: '🔲', label: 'Caixa de inspeção', correct: true },
+  { id: 'tubo-reforcado', emoji: '🛠️', label: 'Tubo reforçado', correct: true },
+  { id: 'tubo-rachado', emoji: '❌', label: 'Tubo rachado', correct: false },
+  { id: 'diametro-errado', emoji: '⚠️', label: 'Conexão de diâmetro errado', correct: false },
+  { id: 'mangueira', emoji: '🚫', label: 'Mangueira improvisada', correct: false },
+];
+const PIPE_SLOT_COUNT = PIPE_PIECES.filter(p => p.correct).length;
+
 let onComplete = null;
 let mapFilled = new Set();
+let pipelineFilled = new Set();
 
 export function init(completeCallback) {
   onComplete = completeCallback;
@@ -25,7 +38,9 @@ export function enter() {
   buildMap();
   qs('#s2-map-card').style.display = '';
   qs('#s2-pipe-card').style.display = 'none';
+  qs('#s2-pipepuzzle-card').style.display = 'none';
   resetPipeChain();
+  buildPipelinePuzzle();
 }
 
 function buildMap() {
@@ -60,7 +75,8 @@ function buildMap() {
         if (zone === tilePool) { zone.appendChild(el); return true; }
         if (zone.dataset.accept !== piece.id) {
           shakeEl(zone);
-          return false;
+          shakeEl(el);
+          return false; // wrong slot: tile snaps back to where it was dragged from
         }
         // if slot already filled, bounce current occupant back to pool
         const existing = zone.querySelector('.map-tile');
@@ -137,11 +153,94 @@ function handlePipeChoice(btn, stage) {
     setTimeout(() => {
       showModal({
         icon: '✓', iconClass: 'ok',
-        title: 'PLANEJAMENTO CONCLUÍDO',
-        text: 'Antes de executar uma obra, é preciso pensar no caminho, analisar o local e prever possíveis problemas. Sala 3 desbloqueada.',
+        title: 'Caminho identificado!',
+        text: 'Agora vamos para a prática: montem a tubulação completa até o objetivo.',
         ctaText: 'Continuar',
-        onCta: () => onComplete && onComplete(),
+        onCta: () => {
+          qs('#s2-pipe-card').style.display = 'none';
+          qs('#s2-pipepuzzle-card').style.display = '';
+        },
       });
     }, 500);
   }
+}
+
+// ---------------- Desafio 3: quebra-cabeça da tubulação ----------------
+
+function buildPipelinePuzzle() {
+  pipelineFilled = new Set();
+  const pool = qs('#s2-pipepuzzle-pool');
+  const slotsWrap = qs('#s2-pipeline-slots');
+  pool.innerHTML = '';
+  slotsWrap.innerHTML = '';
+  qs('#s2-pipeline-objective').classList.remove('objective-reached');
+
+  for (let i = 0; i < PIPE_SLOT_COUNT; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'pipeline-slot';
+    slot.dataset.index = i;
+    slotsWrap.appendChild(slot);
+  }
+  const slots = qsa('.pipeline-slot', slotsWrap);
+
+  shuffle(PIPE_PIECES).forEach(piece => {
+    const tile = document.createElement('div');
+    tile.className = 'pipe-tile';
+    tile.dataset.id = piece.id;
+    tile.title = piece.label;
+    tile.innerHTML = `<span class="emoji">${piece.emoji}</span><span class="label-text">${piece.label}</span>`;
+    pool.appendChild(tile);
+
+    makeDraggable(tile, {
+      getZones: () => slots.concat([pool]),
+      onDrop: (el, zone) => {
+        if (zone === pool) {
+          pipelineFilled.delete(piece.id);
+          pool.appendChild(el);
+          refreshPipelineSlots(slots);
+          return true;
+        }
+        if (!piece.correct) {
+          // damaged/incompatible piece: reject, tile snaps back to where it was dragged from
+          shakeEl(zone);
+          shakeEl(el);
+          return false;
+        }
+        // bounce any tile already occupying this slot back to the pool
+        const existing = zone.querySelector('.pipe-tile');
+        if (existing && existing !== el) {
+          pool.appendChild(existing);
+          pipelineFilled.delete(existing.dataset.id);
+        }
+        zone.appendChild(el);
+        pipelineFilled.add(piece.id);
+        refreshPipelineSlots(slots);
+        checkPipelineComplete(slots);
+        return true;
+      },
+    });
+  });
+
+  refreshPipelineSlots(slots);
+}
+
+function refreshPipelineSlots(slots) {
+  slots.forEach(s => s.classList.toggle('filled', !!s.querySelector('.pipe-tile')));
+}
+
+function checkPipelineComplete(slots) {
+  if (pipelineFilled.size < PIPE_SLOT_COUNT) return;
+
+  qs('#s2-pipeline-objective').classList.add('objective-reached');
+  launchConfetti(40);
+
+  setTimeout(() => {
+    showModal({
+      icon: '✓', iconClass: 'ok',
+      title: 'PLANEJAMENTO CONCLUÍDO',
+      text: 'Vocês conectaram cada peça até a Estação de Tratamento. Um projeto de saneamento só funciona quando cada conexão é planejada e testada com cuidado — um erro aqui pode significar retrabalho, desperdício de recursos e mais tempo sem saneamento para quem mais precisa. Sala 3 desbloqueada.',
+      ctaText: 'Continuar',
+      onCta: () => onComplete && onComplete(),
+    });
+  }, 500);
 }

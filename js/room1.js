@@ -94,6 +94,8 @@ function checkDiagnosis() {
 
   let allGood = true;
 
+  const pool = qs('#s1-pool');
+
   inZone.forEach(chip => {
     const ok = chip.dataset.correct === 'true';
     chip.classList.remove('wrong-flag', 'correct-flag');
@@ -103,6 +105,8 @@ function checkDiagnosis() {
       chip.classList.add('wrong-flag');
       shakeEl(chip);
       allGood = false;
+      // send the wrong card back to its origin (the pool) once the shake finishes
+      setTimeout(() => { pool.appendChild(chip); chip.classList.remove('wrong-flag'); }, 450);
     }
   });
 
