@@ -545,6 +545,7 @@ a{ color: inherit; }
 .hazard-tile:hover{ transform: translateY(-3px); }
 .hazard-tile img{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
 .hazard-tile.found{ border-color: var(--green); }
+.hazard-tile.wrong-flash{ border-color: var(--red); }
 .hazard-tile .found-badge{
   position:absolute; top:8px; right:8px;
   width:30px; height:30px; border-radius:50%;

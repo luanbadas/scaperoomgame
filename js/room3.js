@@ -3,14 +3,16 @@
 // ===========================================================
 import { qs, qsa, shuffle, shakeEl, showModal, makeDraggable } from './utils.js';
 
-const HAZARDS = [
-  { id: 'capacete', img: 'assets/img/hazard-capacete.webp', label: 'Trabalhador sem capacete' },
-  { id: 'isolamento', img: 'assets/img/hazard-isolamento.webp', label: 'Área sem isolamento' },
-  { id: 'ferramenta', img: 'assets/img/hazard-ferramenta.webp', label: 'Ferramenta no caminho' },
-  { id: 'morador', img: 'assets/img/hazard-morador.webp', label: 'Morador dentro da área' },
-  { id: 'material', img: 'assets/img/hazard-material.webp', label: 'Material mal posicionado' },
-  { id: 'epi', img: 'assets/img/hazard-epi.webp', label: 'Falta de equipamento de proteção' },
+const HAZARD_TILES = [
+  { id: 'tubulacao-segura', img: 'assets/img/hazard-tubulacao-segura.webp', label: 'Instalação segura da tubulação', isHazard: false },
+  { id: 'agua-acumulada', img: 'assets/img/hazard-agua-acumulada.webp', label: 'Água acumulada em vala sem isolamento', isHazard: true },
+  { id: 'tubos-sinalizados', img: 'assets/img/hazard-tubos-sinalizados.webp', label: 'Tubos armazenados e sinalizados', isHazard: false },
+  { id: 'compactador-seguro', img: 'assets/img/hazard-compactador-seguro.webp', label: 'Uso correto do equipamento', isHazard: false },
+  { id: 'sem-epi', img: 'assets/img/hazard-sem-epi.webp', label: 'Trabalhador sem equipamento de proteção', isHazard: true },
+  { id: 'nivelamento-seguro', img: 'assets/img/hazard-nivelamento-seguro.webp', label: 'Conferência segura do nivelamento', isHazard: false },
 ];
+
+const HAZARD_COUNT = HAZARD_TILES.filter(h => h.isHazard).length;
 
 const TESTIMONIES = [
   { id: 'tecnico', img: 'assets/img/testimony-tecnico.webp', name: 'Técnico de campo', quote: '"Encontramos água acumulada exatamente onde a tubulação deveria passar."' },
@@ -50,12 +52,13 @@ export function enter() {
   buildOrderStep();
   qs('#s3-start-obra').disabled = true;
   qs('#s3-hazard-count').textContent = '0';
+  qs('#s3-hazard-total').textContent = String(HAZARD_COUNT);
 }
 
 function buildHazards() {
   const grid = qs('#s3-hazard-grid');
   grid.innerHTML = '';
-  shuffle(HAZARDS).forEach(hz => {
+  shuffle(HAZARD_TILES).forEach(hz => {
     const tile = document.createElement('div');
     tile.className = 'hazard-tile';
     tile.dataset.id = hz.id;
@@ -66,10 +69,16 @@ function buildHazards() {
     `;
     tile.addEventListener('click', () => {
       if (foundHazards.has(hz.id)) return;
+      if (!hz.isHazard) {
+        shakeEl(tile);
+        tile.classList.add('wrong-flash');
+        setTimeout(() => tile.classList.remove('wrong-flash'), 500);
+        return;
+      }
       foundHazards.add(hz.id);
       tile.classList.add('found');
       qs('#s3-hazard-count').textContent = String(foundHazards.size);
-      if (foundHazards.size === HAZARDS.length) {
+      if (foundHazards.size === HAZARD_COUNT) {
         qs('#s3-start-obra').disabled = false;
       }
     });

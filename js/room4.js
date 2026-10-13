@@ -77,7 +77,7 @@ function renderScenario() {
 
   const wrap = qs('#s4-scenario-choices');
   wrap.innerHTML = '';
-  shuffle(sc.choices).forEach(choice => {
+  sc.choices.forEach(choice => {
     const btn = document.createElement('button');
     btn.className = 'choice-btn';
     btn.innerHTML = `<span class="ch-letter">${choice.letter}</span>${choice.text}`;
