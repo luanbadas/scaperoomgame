@@ -11,6 +11,64 @@ import * as Room4 from './room4.js';
 
 const ROOM_MODULES = { 1: Room1, 2: Room2, 3: Room3, 4: Room4 };
 
+const ROOM_CHAPTERS = {
+  1: {
+    num: 'SALA 1',
+    title: 'O que está acontecendo?',
+    bg: 'assets/img/investigacao-comunidade.webp',
+    fact: '💡 No Brasil, milhões de famílias ainda convivem com esgoto a céu aberto perto de casa.',
+  },
+  2: {
+    num: 'SALA 2',
+    title: 'Para onde vai o esgoto?',
+    bg: 'assets/img/bg-recepcao.webp',
+    fact: '💡 Planejar o caminho da água antes de cavar evita retrabalho e economiza tempo e dinheiro.',
+  },
+  3: {
+    num: 'SALA 3',
+    title: 'A obra começou',
+    bg: 'assets/img/missao-antes.webp',
+    fact: '💡 Esgoto exposto é uma das principais causas de doenças em crianças — por isso segurança e cuidado na obra importam tanto.',
+  },
+  4: {
+    num: 'SALA 4',
+    title: 'Para quem estamos construindo?',
+    bg: 'assets/img/missao-depois.webp',
+    fact: '💡 Saneamento básico não é só sobre tubulações — é sobre saúde, dignidade e qualidade de vida.',
+  },
+};
+
+let chapterTimer = null;
+
+function showChapterIntro(n, onDone) {
+  const data = ROOM_CHAPTERS[n];
+  const img = qs('#chapter-bg-img');
+  img.src = data.bg;
+  img.alt = data.title;
+  // restart the ken-burns zoom from scratch every time this chapter plays
+  img.style.animation = 'none';
+  void img.offsetWidth;
+  img.style.animation = '';
+
+  qs('#chapter-num').textContent = data.num;
+  qs('#chapter-title').textContent = data.title;
+  qs('#chapter-fact').textContent = data.fact;
+
+  showScreen('chapter-intro');
+
+  const skipBtn = qs('#chapter-skip');
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(chapterTimer);
+    skipBtn.removeEventListener('click', finish);
+    onDone();
+  };
+  skipBtn.addEventListener('click', finish);
+  chapterTimer = setTimeout(finish, 2600);
+}
+
 function showScreen(name) {
   qsa('.screen').forEach(s => s.classList.remove('active'));
   const target = qs(`.screen[data-screen="${name}"]`);
@@ -48,8 +106,10 @@ function renderHub() {
 function enterRoom(n) {
   const state = loadState();
   if (!isRoomUnlocked(n, state)) return;
-  ROOM_MODULES[n].enter();
-  showScreen('room' + n);
+  showChapterIntro(n, () => {
+    ROOM_MODULES[n].enter();
+    showScreen('room' + n);
+  });
 }
 
 function completeRoom(n) {

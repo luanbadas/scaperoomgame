@@ -17,7 +17,9 @@
     <div class="container">
       <div class="intro-card">
         <span class="enops-logo"><span class="dot"></span>ENOPS engenharia</span>
-        <img class="intro-hero-img" src="assets/img/familia-triste.webp" alt="Família Oliveira na comunidade, preocupada com os problemas de saneamento">
+        <div class="intro-hero-frame">
+          <img class="intro-hero-img ken-burns" src="assets/img/familia-triste.webp" alt="Família Oliveira na comunidade, preocupada com os problemas de saneamento">
+        </div>
         <div class="eyebrow">MISSÃO ENOPS</div>
         <h1>Água, Dignidade e Futuro</h1>
         <div class="intro-text">
@@ -77,6 +79,20 @@
     </div>
   </section>
 
+  <!-- =================== CAPÍTULO (cutscene de entrada na sala) =================== -->
+  <section class="screen chapter-screen" data-screen="chapter-intro">
+    <div class="chapter-bg">
+      <img id="chapter-bg-img" src="" alt="">
+      <div class="chapter-overlay"></div>
+    </div>
+    <div class="chapter-content">
+      <div class="chapter-num" id="chapter-num">SALA 1</div>
+      <h1 id="chapter-title">Título da sala</h1>
+      <p class="chapter-fact" id="chapter-fact">💡 Curiosidade</p>
+    </div>
+    <button class="chapter-skip" id="chapter-skip">Pular →</button>
+  </section>
+
   <!-- =================== SALA 1 — DIAGNÓSTICO =================== -->
   <section class="screen" data-screen="room1">
     <div class="topbar">
@@ -88,7 +104,7 @@
       <div class="container">
 
         <div class="room-intro-banner">
-          <img src="assets/img/investigacao-comunidade.webp" alt="Equipe ENOPS investigando a comunidade">
+          <img class="ken-burns" src="assets/img/investigacao-comunidade.webp" alt="Equipe ENOPS investigando a comunidade">
         </div>
 
         <div class="section-card" id="s1-investigate-card">
@@ -299,8 +315,8 @@
   <section class="screen ending-screen" data-screen="ending">
     <div class="container">
       <div class="ending-stage">
-        <img id="ending-img-before" src="assets/img/missao-antes.webp" alt="A comunidade antes da intervenção, com esgoto exposto">
-        <img id="ending-img-after" src="assets/img/missao-depois.webp" alt="A comunidade depois da intervenção, com rua transformada">
+        <img id="ending-img-before" class="ken-burns-ending" src="assets/img/missao-antes.webp" alt="A comunidade antes da intervenção, com esgoto exposto">
+        <img id="ending-img-after" class="ken-burns-ending" src="assets/img/missao-depois.webp" alt="A comunidade depois da intervenção, com rua transformada">
       </div>
       <p class="ending-caption" id="ending-caption">A comunidade antes da intervenção...</p>
     </div>

@@ -1,7 +1,7 @@
 // ===========================================================
 // SALA 3 — A obra começou (segurança + imprevisto)
 // ===========================================================
-import { qs, qsa, shuffle, shakeEl, showModal, makeDraggable } from './utils.js';
+import { qs, qsa, shuffle, shakeEl, showModal, launchConfetti, makeDraggable } from './utils.js';
 
 const HAZARD_TILES = [
   { id: 'tubulacao-segura', img: 'assets/img/hazard-tubulacao-segura.webp', label: 'Instalação segura da tubulação', isHazard: false },
@@ -190,6 +190,7 @@ function handleOrderPick(btn, step) {
 
   if (orderPicked.length === ORDER_STEPS.length) {
     setTimeout(() => {
+      launchConfetti(50);
       showModal({
         icon: '✓', iconClass: 'ok',
         title: 'IMPREVISTO SOLUCIONADO',

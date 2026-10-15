@@ -1,7 +1,7 @@
 // ===========================================================
 // SALA 1 — Diagnóstico
 // ===========================================================
-import { qs, qsa, shuffle, shakeEl, showModal, makeDraggable } from './utils.js';
+import { qs, qsa, shuffle, shakeEl, showModal, launchConfetti, makeDraggable } from './utils.js';
 
 const SPOT_TEXT = {
   casa1: { name: 'Casa 1', quote: '"Quando chove, o esgoto volta para perto da nossa casa."' },
@@ -127,6 +127,7 @@ function checkDiagnosis() {
     return;
   }
 
+  launchConfetti(50);
   showModal({
     icon: '✓', iconClass: 'ok',
     title: 'DIAGNÓSTICO CONCLUÍDO',
