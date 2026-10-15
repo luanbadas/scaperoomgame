@@ -127,6 +127,7 @@ export function makeDraggable(cardEl, { getZones, onDrop, onReturn, draggingClas
       cardEl.removeEventListener('pointermove', onMove);
       cardEl.removeEventListener('pointerup', onUp);
       cardEl.removeEventListener('pointercancel', onUp);
+      try { cardEl.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
 
       const zones = getZones();
       zones.forEach(z => z.classList.remove('drag-over'));

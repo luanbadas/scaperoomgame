@@ -797,7 +797,19 @@ a{ color: inherit; }
 
 /* ---------- Mission complete ---------- */
 
-.complete-screen{ align-items:center; padding: 40px 18px 70px; }
+.complete-screen{
+  align-items:center;
+  justify-content:center;
+  padding: 40px 18px 70px;
+  background:
+    linear-gradient(180deg, rgba(246,237,216,.35), rgba(246,237,216,.55)),
+    url('../assets/img/bg-recepcao.webp') center center / cover no-repeat;
+}
+.complete-screen .container{
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
 .complete-card{
   max-width: 760px; margin:0 auto;
   background:#fff; border-radius: var(--radius-lg);
