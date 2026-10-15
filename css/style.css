@@ -865,6 +865,15 @@ a{ color: inherit; }
 
 .ending-screen{
   align-items:center; justify-content:center; text-align:center; padding: 30px 18px;
+  background:
+    linear-gradient(180deg, rgba(246,237,216,.35), rgba(246,237,216,.55)),
+    url('../assets/img/bg-recepcao.webp') center center / cover no-repeat;
+}
+.ending-screen .container{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 .ending-stage{
   position:relative; width:100%; max-width: 640px;
